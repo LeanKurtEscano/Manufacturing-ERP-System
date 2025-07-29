@@ -1,0 +1,41 @@
+package com.leankurt.erp.manufacturing_erp.model;
+
+
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+
+@Entity
+@Getter
+@Setter
+@Table(name = "users")
+public class User {
+
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(name = "first_name")
+    private String firstName;
+
+    @Column(name = "middle_name")
+    private String middleName;
+
+    @Column(name = "last_name")
+    private String lastName;
+
+    private Integer age;
+
+    @Column(unique = true, nullable = false)
+    private String email;
+
+    @Column(name = "email_address", unique = true, nullable = false)
+    private String address;
+
+
+    private String password;
+
+    private String employeeId;
+
+}
