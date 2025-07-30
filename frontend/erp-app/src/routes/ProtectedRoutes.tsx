@@ -15,4 +15,4 @@ const ProtectedRoute = ({ element, allowedRoles }: ProtectedRouteProps) => {
   return element;
 };
 
-export default ProtectedRoute;
+export default ProtectedRoute;  
