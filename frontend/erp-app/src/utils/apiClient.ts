@@ -1,4 +1,3 @@
-// utils/apiClient.ts
 import type { AxiosInstance } from "axios";
 
 export const createApiClient = (axiosInstance: AxiosInstance) => {
