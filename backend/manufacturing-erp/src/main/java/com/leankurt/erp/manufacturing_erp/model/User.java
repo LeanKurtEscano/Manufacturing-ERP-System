@@ -33,6 +33,7 @@ public class User {
     @Column(name = "email_address", unique = true, nullable = false)
     private String address;
 
+    private String role;
 
     private String password;
 

@@ -35,7 +35,9 @@ public class AuthController {
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody RegistrationDto user) {
         userService.registerUser(user);
-        return (ResponseEntity<?>) ResponseEntity.status(HttpStatus.CREATED);
+        return ResponseEntity.status(HttpStatus.CREATED).body("User registered successfully");
+
+
 
     }
 
@@ -43,20 +45,9 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginDto loginRequest) {
-        try {
-            Authentication authentication = authManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword())
-            );
 
-            String token = jwtUtil.generateToken(loginRequest.getEmail());
+            Map<String, Object> auth = userService.loginUser(loginRequest);
+            return ResponseEntity.ok(auth);
 
-            Map<String, String> response = new HashMap<>();
-            response.put("token", token);
-            response.put("type", "Bearer");
-
-            return ResponseEntity.ok(response);
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Invalid credentials");
-        }
     }
 }

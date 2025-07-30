@@ -4,18 +4,22 @@ package com.leankurt.erp.manufacturing_erp.dto;
 
 public class RegistrationDto {
 
-    private Long id;
     private String firstName;
     private String middleName;
     private String lastName;
+    private String role;
     private Integer age;
     private String email;
     private String address;
     private String password;
 
-    // Getters
-    public Long getId() {
-        return id;
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
     }
 
     public String getFirstName() {
@@ -47,9 +51,7 @@ public class RegistrationDto {
     }
 
     // Setters
-    public void setId(Long id) {
-        this.id = id;
-    }
+
 
     public void setFirstName(String firstName) {
         this.firstName = firstName;
