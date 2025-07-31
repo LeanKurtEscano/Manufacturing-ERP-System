@@ -28,7 +28,7 @@ const refreshUserToken  = async() => {
 
     try {
         const response =  await userAuthApi.post('/refresh',{
-            refresh: refreshToken
+            refreshToken: refreshToken
         })
 
 

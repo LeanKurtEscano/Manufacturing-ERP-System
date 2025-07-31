@@ -20,7 +20,7 @@ public class UserController {
 
 
 
-    @PostMapping("/all")
+    @GetMapping("/all")
     public ResponseEntity<List<User>> getAllUsers() {
 
         List<User> users = userService.getAllUsers();

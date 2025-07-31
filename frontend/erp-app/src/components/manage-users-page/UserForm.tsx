@@ -127,7 +127,7 @@ const UserForm: React.FC<UserFormProps> = ({ setFormData, formData, isEdit, role
           >
             <option value="">Select Role</option>
             {roles.map(role => (
-              <option key={role} value={role}>{role}</option>
+              <option key={role} value={role.replace(/\s+/g, '_').toUpperCase()}>{role}</option>
             ))}
           </select>
         </div>

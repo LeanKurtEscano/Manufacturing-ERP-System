@@ -48,6 +48,8 @@ const Login: React.FC = () => {
 
       if (response.status === 200) {
         navigate('/dashboard/analytics');
+        localStorage.setItem('access_token', response.data.access_token);
+        localStorage.setItem('refresh_token', response.data.refresh_token);
       }
 
     } catch (error: any) {

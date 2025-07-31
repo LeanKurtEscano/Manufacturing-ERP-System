@@ -47,10 +47,17 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             token = authHeader.substring(7);
             try {
                 email = jwtUtil.extractEmail(token);
+                System.out.println(email);
             } catch (Exception e) {
+                System.out.println("JWT extraction error: " + e.getMessage());
                 // Invalid token
             }
         }
+
+        System.out.println("JWT Filter: Incoming request: " + path);
+        System.out.println("Auth Header: " + authHeader);
+        System.out.println("Extracted Email: " + email);
+
 
         if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails = userService.loadUserByUsername(email);

@@ -6,8 +6,7 @@ import { Link } from 'react-router-dom';
 import { faBars, faChartLine, faSignOutAlt, faTimes, faUser } from '@fortawesome/free-solid-svg-icons';
 import { useNavigate } from 'react-router-dom';
 
-import Modal from '../components/Modal';
-
+import Modal from '../components/Modal/Modal';
 
 import { useProfile } from '../contexts/ProfileContext';
 import { userAuthApi } from '../config/apiConfig';

@@ -17,19 +17,32 @@ import {
   Hash
 } from 'lucide-react';
 
+import { useQuery } from '@tanstack/react-query';
+
 import UserForm from '../../components/manage-users-page/UserForm';
 import type { UserData,UserFormData,ModalProps } from '../../constants/interfaces/manageUsersPage';
 import BaseModal from '../../components/Modal/BaseModal';
+import { userApi } from '../../config/apiConfig';
+
 
 const ManageUsers: React.FC = () => {
-  const [users, setUsers] = useState<UserData[]>([]);
+
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [filterRole, setFilterRole] = useState<string>('all');
   const [showAddModal, setShowAddModal] = useState<boolean>(false);
   const [showEditModal, setShowEditModal] = useState<boolean>(false);
   const [selectedUser, setSelectedUser] = useState<UserData | null>(null);
   const [showMobileMenu, setShowMobileMenu] = useState<Record<number, boolean>>({});
+  
+  const {data: users, isLoading, error} = useQuery<UserData[]>({
+    queryKey: ['users'],
+    queryFn: async () => {
+        const response = await userApi.get('/all');
+        return response.data;
+    }
+  });
 
+  console.log(users);
   // Mock data - replace with actual API calls
   const mockUsers: UserData[] = [
     {
@@ -70,9 +83,7 @@ const ManageUsers: React.FC = () => {
     }
   ];
 
-  useEffect(() => {
-    setUsers(mockUsers);
-  }, []);
+
 
   const [formData, setFormData] = useState<UserFormData>({
     firstName: '',
@@ -87,9 +98,10 @@ const ManageUsers: React.FC = () => {
     employeeId: ''
   });
 
-  const roles: string[] = ['Super Admin', 'Admin', 'Manager', 'Supervisor', 'Operator', 'Quality Control'];
+  const roles: string[] = [ 'Inventory Manager', 'Sales Representative', 'Production Manager' ];
 
-  const filteredUsers: UserData[] = users.filter(user => {
+
+  const filteredUsers = users?.filter(user => {
     const matchesSearch = `${user.firstName} ${user.lastName} ${user.emailAddress} ${user.employeeId}`
       .toLowerCase().includes(searchTerm.toLowerCase());
     const matchesRole = filterRole === 'all' || user.role === filterRole;
@@ -108,7 +120,7 @@ const ManageUsers: React.FC = () => {
   };
 
   const handleDeleteUser = (userId: number) => {
-    setUsers(users.filter(user => user.id !== userId));
+    
   };
 
   const openEditModal = (user: UserData) => {
@@ -199,7 +211,7 @@ const ManageUsers: React.FC = () => {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-700">
-                {filteredUsers.map((user) => (
+                {filteredUsers?.map((user) => (
                   <tr key={user.id} className="hover:bg-gray-700">
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center">
@@ -254,7 +266,7 @@ const ManageUsers: React.FC = () => {
 
 
         <div className="lg:hidden space-y-4">
-          {filteredUsers.map((user) => (
+          {filteredUsers?.map((user) => (
             <div key={user.id} className="bg-gray-800 rounded-lg p-4">
               <div className="flex items-start justify-between mb-3">
                 <div className="flex items-center">
@@ -330,7 +342,7 @@ const ManageUsers: React.FC = () => {
           ))}
         </div>
 
-        {filteredUsers.length === 0 && (
+        {filteredUsers?.length === 0 && (
           <div className="text-center py-12 text-gray-400">
             <User className="w-12 h-12 mx-auto mb-4 opacity-50" />
             <p>No users found matching your criteria.</p>
