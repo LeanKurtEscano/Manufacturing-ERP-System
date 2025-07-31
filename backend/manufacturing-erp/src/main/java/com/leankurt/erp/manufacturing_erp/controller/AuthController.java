@@ -88,4 +88,15 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid refresh token");
         }
     }
+
+
+    @PostMapping("/logout")
+    public ResponseEntity<?> logoutUser(@RequestBody RefreshTokenDto request) {
+        String refreshToken = request.getRefreshToken();
+
+        refreshTokenService.blacklistToken(refreshToken);
+
+        return  ResponseEntity.ok(Map.of("success", "Successfully logout user"));
+
+    }
 }
