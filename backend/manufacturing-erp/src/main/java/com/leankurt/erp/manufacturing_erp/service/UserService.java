@@ -125,6 +125,13 @@ public  class UserService implements UserDetailsService {
 
     }
 
+    public String getEmail(String email) {
+        return String.valueOf(userRepository.findByEmail(email));
+    }
+
+
+
+
 
 
 }

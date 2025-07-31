@@ -1,19 +1,27 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
 
+import './App.css'
+import { ProfileProvider } from './contexts/ProfileContext'
+import useTokenHandler from './hooks/useTokenHandler'
+
+import { Route,Routes } from 'react-router-dom'
 function App() {
-  const [count, setCount] = useState(0)
+ 
 
   return (
-    <>
-      <h1 className="text-3xl font-bold underline">
-        Hello world!
-      </h1>
-       
-    </>
+    <ProfileProvider>
+      <Main />
+    </ProfileProvider>
   )
 }
+
+const Main:React.FC = () => {
+  useTokenHandler();
+  return (
+    <>
+    
+    
+    </>
+  );
+};
 
 export default App
