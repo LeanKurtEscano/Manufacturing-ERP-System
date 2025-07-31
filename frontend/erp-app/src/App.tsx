@@ -6,6 +6,7 @@ import useTokenHandler from './hooks/useTokenHandler'
 import { Route,Routes } from 'react-router-dom'
 import Dashboard from './pages/Dashboard'
 import Login from './pages/auth/Login'
+import ManageUsers from './pages/super-admin/ManageUsers'
 function App() {
  
 
@@ -27,7 +28,10 @@ const Main:React.FC = () => {
           element={
             <Dashboard />
           }
-        ></Route>
+        >
+        <Route path="manage-users" element={<ManageUsers />} />
+
+        </Route>
     </Routes>
     
     </>

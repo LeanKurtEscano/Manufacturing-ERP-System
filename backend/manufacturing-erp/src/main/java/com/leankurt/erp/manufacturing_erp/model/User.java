@@ -27,14 +27,14 @@ public class User {
 
     private Integer age;
 
-    @Column(unique = true, nullable = false)
-    private String email;
+    @Column(name  = "email_address",unique = true, nullable = false)
+    private String emailAddress;
 
-    @Column(name = "email_address", unique = true, nullable = false)
+    @Column(nullable = false)
     private String address;
 
 
-    @Column(name = "contact_number", unique = true, nullable = false)
+    @Column(name = "contact_number", unique = true,nullable = false)
     private String contactNumber;
 
     private String role;
