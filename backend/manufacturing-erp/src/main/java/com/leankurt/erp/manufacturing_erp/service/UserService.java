@@ -21,6 +21,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -127,6 +128,10 @@ public  class UserService implements UserDetailsService {
 
     public String getEmail(String email) {
         return String.valueOf(userRepository.findByEmail(email));
+    }
+
+    public List<User> getAllUsers() {
+        return  userRepository.findAll();
     }
 
 

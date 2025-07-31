@@ -20,7 +20,7 @@ const Main:React.FC = () => {
   useTokenHandler();
   return (
     <>
-
+    <Routes>
      <Route path="/" element={<Login />} />
      <Route
           path="/dashboard/*"
@@ -28,7 +28,7 @@ const Main:React.FC = () => {
             <Dashboard />
           }
         ></Route>
-    
+    </Routes>
     
     </>
   );
