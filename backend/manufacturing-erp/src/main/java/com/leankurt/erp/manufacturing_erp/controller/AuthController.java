@@ -42,7 +42,7 @@ public class AuthController {
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody RegistrationDto user) {
 
-        System.out.println("EMAIL IN DTO: " + user.getEmail());
+        System.out.println("EMAIL IN DTO: " + user.getEmailAddress());
 
         userService.registerUser(user);
         return ResponseEntity.status(HttpStatus.CREATED).body("User registered successfully");
@@ -83,7 +83,7 @@ public class AuthController {
 
             String newAccessToken = jwtUtil.generateAccessToken(email);
             Map<String, String> response = new HashMap<>();
-            response.put("accessToken", newAccessToken);
+            response.put("access", newAccessToken);
 
             return ResponseEntity.ok(response);
 

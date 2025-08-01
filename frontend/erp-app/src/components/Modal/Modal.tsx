@@ -15,7 +15,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, title, message, onClose, onConfir
  
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-gray-500/50  bg-opacity-40 bg-opacity-50 z-50">
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center   bg-opacity-40 bg-opacity-50 z-50">
       <motion.div
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
@@ -31,7 +31,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, title, message, onClose, onConfir
        
         <div className="mt-4 flex justify-end space-x-3">
           <button 
-            className="px-4 py-2 cursor-pointer text-gray-600 border border-gray-300 rounded-md hover:bg-gray-100 transition"
+            className="px-4  py-2 cursor-pointer text-gray-600 border border-gray-300 rounded-md hover:bg-gray-100 transition"
             onClick={onClose}
           >
             Cancel

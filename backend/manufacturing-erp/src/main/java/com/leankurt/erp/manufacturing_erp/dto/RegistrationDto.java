@@ -13,7 +13,7 @@ public class RegistrationDto {
     private String lastName;
     private String role;
     private Integer age;
-    private String email;
+    private String emailAddress;
     private String contactNumber;
     private String address;
     private String password;

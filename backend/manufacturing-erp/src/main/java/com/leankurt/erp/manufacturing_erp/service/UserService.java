@@ -73,7 +73,7 @@ public  class UserService implements UserDetailsService {
 
     public void registerUser(RegistrationDto request) {
 
-        if(userRepository.findByEmailAddress(request.getEmail()).isPresent()) {
+        if(userRepository.findByEmailAddress(request.getEmailAddress()).isPresent()) {
             throw new EmailAlreadyExistsException("Email Already Exists");
         }
 
@@ -85,7 +85,7 @@ public  class UserService implements UserDetailsService {
         user.setMiddleName(request.getMiddleName());
         user.setLastName(request.getLastName());
         user.setAge(request.getAge());
-        user.setEmailAddress(request.getEmail());
+        user.setEmailAddress(request.getEmailAddress());
         user.setAddress(request.getAddress());
         user.setContactNumber(request.getContactNumber());
         user.setRole(request.getRole());
@@ -129,7 +129,7 @@ public  class UserService implements UserDetailsService {
     }
 
     public List<User> getAllUsers() {
-        return  userRepository.findAll();
+        return  userRepository.findByRoleNot("SUPER_ADMIN");
     }
 
 
@@ -141,7 +141,7 @@ public  class UserService implements UserDetailsService {
         user.setLastName(dto.getLastName());
         user.setAddress(dto.getAddress());
         user.setAge(dto.getAge());
-        user.setEmailAddress(dto.getEmail());
+        user.setEmailAddress(dto.getEmailAddress());
         user.setContactNumber(dto.getContactNumber());
         user.setRole(dto.getRole());
 

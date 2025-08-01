@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  Search, 
-  Plus, 
-  Edit, 
-  Trash2, 
-  Eye, 
-  EyeOff, 
-  Filter, 
+import {
+  Search,
+  Plus,
+  Edit,
+  Trash2,
+  Eye,
+  EyeOff,
+  Filter,
   Download,
   MoreVertical,
   User,
@@ -20,9 +20,9 @@ import {
 import { useQuery } from '@tanstack/react-query';
 
 import UserForm from '../../components/manage-users-page/UserForm';
-import type { UserData,UserFormData,ModalProps } from '../../constants/interfaces/manageUsersPage';
+import type { UserData, UserFormData, ModalProps } from '../../constants/interfaces/manageUsersPage';
 import BaseModal from '../../components/Modal/BaseModal';
-import { userApi } from '../../config/apiConfig';
+import { userApi, userAuthApi } from '../../config/apiConfig';
 import { useQueryClient } from '@tanstack/react-query';
 
 const ManageUsers: React.FC = () => {
@@ -33,13 +33,13 @@ const ManageUsers: React.FC = () => {
   const [showEditModal, setShowEditModal] = useState<boolean>(false);
   const [selectedUser, setSelectedUser] = useState<UserData | null>(null);
   const [showMobileMenu, setShowMobileMenu] = useState<Record<number, boolean>>({});
-  
+
   const queryClient = useQueryClient();
-  const {data: users, isLoading, error} = useQuery<UserData[]>({
+  const { data: users, isLoading, error } = useQuery<UserData[]>({
     queryKey: ['users'],
     queryFn: async () => {
-        const response = await userApi.get('/all');
-        return response.data;
+      const response = await userApi.get('/all');
+      return response.data;
     }
   });
 
@@ -53,10 +53,10 @@ const ManageUsers: React.FC = () => {
     contactNumber: '',
     role: '',
     password: '',
-    employeeId: ''
+
   });
 
-  const roles: string[] = [ 'Inventory Manager', 'Sales Representative', 'Production Manager' ];
+  const roles: string[] = ['Inventory Manager', 'Sales Representative', 'Production Manager'];
 
 
   const filteredUsers = users?.filter(user => {
@@ -70,10 +70,22 @@ const ManageUsers: React.FC = () => {
 
 
     try {
-      const response = await userApi.post('/register', formData);
+      const response = await userAuthApi.post('/register', formData);
 
-      if(response.status === 201) {
+      if (response.status === 201) {
         queryClient.invalidateQueries({ queryKey: ['users'] });
+        setShowAddModal(false);
+        setFormData({
+          firstName: '',
+          middleName: '',
+          lastName: '',
+          age: '',
+          emailAddress: '',
+          address: '',
+          contactNumber: '',
+          role: '',
+          password: '',
+        });
 
       }
 
@@ -81,18 +93,47 @@ const ManageUsers: React.FC = () => {
       console.error('Error adding user:', error);
 
     }
-   
-    setShowAddModal(false);
+
+
   };
 
-  const handleEditUser = () => {
-   
+  const handleEditUser = async() => {
+
+    try {
+      const response = await userApi.put(`/${selectedUser?.id}`, formData);
+
+      if (response.status === 200) {
+        queryClient.invalidateQueries({ queryKey: ['users'] });
+        setShowEditModal(false);
+        setFormData({
+          firstName: '',
+          middleName: '',
+          lastName: '',
+          age: '',
+          emailAddress: '',
+          address: '',
+          contactNumber: '',
+          role: '',
+          password: '',
+        });
+      }
+
+      setShowEditModal(false);
+      setSelectedUser(null);
+    } catch (error) {
+      console.error('Error editing user:', error);
+
+    }
+
+
+
+
     setShowEditModal(false);
     setSelectedUser(null);
   };
 
   const handleDeleteUser = (userId: number) => {
-    
+
   };
 
   const openEditModal = (user: UserData) => {
@@ -100,7 +141,7 @@ const ManageUsers: React.FC = () => {
     setFormData({
       ...user,
       age: user.age.toString(),
-      password: '' 
+      password: ''
     });
     setShowEditModal(true);
   };
@@ -112,7 +153,7 @@ const ManageUsers: React.FC = () => {
     }));
   };
 
- 
+
 
 
 
@@ -287,7 +328,7 @@ const ManageUsers: React.FC = () => {
                   )}
                 </div>
               </div>
-              
+
               <div className="space-y-2 text-sm">
                 <div className="flex items-center gap-2 text-gray-300">
                   <Hash className="w-4 h-4" />

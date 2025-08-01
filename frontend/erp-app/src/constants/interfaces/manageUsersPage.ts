@@ -25,7 +25,7 @@ export  interface UserFormData {
   contactNumber: string;
   role: string;
   password: string;
-  employeeId: string;
+ 
 }
 
 export interface ModalProps {
