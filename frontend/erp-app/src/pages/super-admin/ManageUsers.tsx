@@ -23,7 +23,7 @@ import UserForm from '../../components/manage-users-page/UserForm';
 import type { UserData,UserFormData,ModalProps } from '../../constants/interfaces/manageUsersPage';
 import BaseModal from '../../components/Modal/BaseModal';
 import { userApi } from '../../config/apiConfig';
-
+import { useQueryClient } from '@tanstack/react-query';
 
 const ManageUsers: React.FC = () => {
 
@@ -34,6 +34,7 @@ const ManageUsers: React.FC = () => {
   const [selectedUser, setSelectedUser] = useState<UserData | null>(null);
   const [showMobileMenu, setShowMobileMenu] = useState<Record<number, boolean>>({});
   
+  const queryClient = useQueryClient();
   const {data: users, isLoading, error} = useQuery<UserData[]>({
     queryKey: ['users'],
     queryFn: async () => {
@@ -41,49 +42,6 @@ const ManageUsers: React.FC = () => {
         return response.data;
     }
   });
-
-  console.log(users);
-  // Mock data - replace with actual API calls
-  const mockUsers: UserData[] = [
-    {
-      id: 1,
-      firstName: 'John',
-      middleName: 'Michael',
-      lastName: 'Doe',
-      age: 32,
-      emailAddress: 'john.doe@company.com',
-      address: '123 Manufacturing St, Industrial City',
-      contactNumber: '+1-555-0123',
-      role: 'Admin',
-      employeeId: 'EMP001'
-    },
-    {
-      id: 2,
-      firstName: 'Sarah',
-      middleName: 'Jane',
-      lastName: 'Wilson',
-      age: 28,
-      emailAddress: 'sarah.wilson@company.com',
-      address: '456 Factory Ave, Production Town',
-      contactNumber: '+1-555-0124',
-      role: 'Manager',
-      employeeId: 'EMP002'
-    },
-    {
-      id: 3,
-      firstName: 'Mike',
-      middleName: '',
-      lastName: 'Johnson',
-      age: 35,
-      emailAddress: 'mike.johnson@company.com',
-      address: '789 Assembly Blvd, Manufacturing Hub',
-      contactNumber: '+1-555-0125',
-      role: 'Operator',
-      employeeId: 'EMP003'
-    }
-  ];
-
-
 
   const [formData, setFormData] = useState<UserFormData>({
     firstName: '',
@@ -108,7 +66,21 @@ const ManageUsers: React.FC = () => {
     return matchesSearch && matchesRole;
   });
 
-  const handleAddUser = () => {
+  const handleAddUser = async () => {
+
+
+    try {
+      const response = await userApi.post('/register', formData);
+
+      if(response.status === 201) {
+        queryClient.invalidateQueries({ queryKey: ['users'] });
+
+      }
+
+    } catch (error) {
+      console.error('Error adding user:', error);
+
+    }
    
     setShowAddModal(false);
   };
