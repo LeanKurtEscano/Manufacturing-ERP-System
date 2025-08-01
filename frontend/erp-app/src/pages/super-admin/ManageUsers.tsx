@@ -24,7 +24,7 @@ import type { UserData, UserFormData, ModalProps } from '../../constants/interfa
 import BaseModal from '../../components/Modal/BaseModal';
 import { userApi, userAuthApi } from '../../config/apiConfig';
 import { useQueryClient } from '@tanstack/react-query';
-
+import Modal from '../../components/Modal/Modal';
 const ManageUsers: React.FC = () => {
 
   const [searchTerm, setSearchTerm] = useState<string>('');
@@ -33,6 +33,7 @@ const ManageUsers: React.FC = () => {
   const [showEditModal, setShowEditModal] = useState<boolean>(false);
   const [selectedUser, setSelectedUser] = useState<UserData | null>(null);
   const [showMobileMenu, setShowMobileMenu] = useState<Record<number, boolean>>({});
+  const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
 
   const queryClient = useQueryClient();
   const { data: users, isLoading, error } = useQuery<UserData[]>({
@@ -132,7 +133,19 @@ const ManageUsers: React.FC = () => {
     setSelectedUser(null);
   };
 
-  const handleDeleteUser = (userId: number) => {
+  const handleDeleteUser = async() => {
+
+    try {
+
+      const response = await userApi.delete(`/${selectedUserId}`);
+      if (response.status === 200) {
+        queryClient.invalidateQueries({ queryKey: ['users'] });
+        setSelectedUserId(null);
+      }
+
+    } catch (error) {
+      console.error('Error deleting user:', error);
+    }
 
   };
 
@@ -189,7 +202,7 @@ const ManageUsers: React.FC = () => {
                 >
                   <option value="all">All Roles</option>
                   {roles.map(role => (
-                    <option key={role} value={role}>{role}</option>
+                    <option key={role} value={role.replace(/\s+/g, '_').toUpperCase()}>{role}</option>
                   ))}
                 </select>
               </div>
@@ -263,7 +276,7 @@ const ManageUsers: React.FC = () => {
                           <Edit className="w-4 h-4" />
                         </button>
                         <button
-                          onClick={() => handleDeleteUser(user.id)}
+                          onClick={() => setSelectedUserId(user.id)}
                           className="text-red-400 hover:text-red-300"
                         >
                           <Trash2 className="w-4 h-4" />
@@ -371,6 +384,16 @@ const ManageUsers: React.FC = () => {
           <UserForm setFormData={setFormData} formData={formData} roles={roles} />
         </BaseModal>
 
+         <Modal
+         loading={false}
+          isOpen={selectedUserId !== null}
+          onClose={() => setSelectedUserId(null)}
+          title="Delete User"
+          message='Are you sure you want to delete this user? This action cannot be undone.'
+          onConfirm={handleDeleteUser}
+        >
+         
+        </Modal>
 
         <BaseModal
           show={showEditModal}
