@@ -8,13 +8,18 @@ import Dashboard from './pages/Dashboard'
 import Login from './pages/auth/Login'
 import ManageUsers from './pages/super-admin/ManageUsers'
 import ManageProducts from './pages/inventory-manager/ManageProducts'
+import { ProductProvider } from './contexts/ProductContext'
 function App() {
  
 
   return (
-    <ProfileProvider>
+    <ProductProvider>
+ <ProfileProvider>
       <Main />
     </ProfileProvider>
+
+    </ProductProvider>
+   
   )
 }
 

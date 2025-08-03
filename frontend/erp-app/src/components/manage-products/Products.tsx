@@ -1,11 +1,57 @@
 import React from 'react'
+import { useProductContext } from '../../contexts/ProductContext';
+import type{ Product } from '../../constants/interfaces/manageProducts';
+interface ProductsProps {
+setShowProductModal: React.Dispatch<React.SetStateAction<boolean>>;
 
-const Products = () => {
+products: Product[];
+}
+import { mockCategories } from '../../constants/render';
+
+const Products: React.FC<ProductsProps> = ({ setShowProductModal, products }) => {
+
+  const { setEditingProduct, setProductForm,setBomItems } = useProductContext();
+   const getCategoryName = (categoryId: string) => {
+    return mockCategories.find(c => c.id === categoryId)?.name || 'Unknown';
+  };
+
+     const resetProductForm = () => {
+    setProductForm({
+      name: '',
+      sku: '',
+      categoryId: '',
+      description: '',
+      bom: [],
+    });
+    setBomItems([]);
+    setEditingProduct(null);
+  };
+
 
     const handleAddProduct = () => {
     setShowProductModal(true);
     resetProductForm();
   };
+
+ 
+  
+
+   const handleDeleteProduct = (id: string) => {
+   
+  };
+
+  const handleEditProduct = (product: Product) => {
+      setEditingProduct(product);
+      setProductForm({
+        name: product.name,
+        sku: product.sku,
+        categoryId: product.categoryId,
+        description: product.description,
+        bom: product.bom,
+      });
+      setBomItems(product.bom);
+      setShowProductModal(true);
+    };
 
   return (
     <div>
