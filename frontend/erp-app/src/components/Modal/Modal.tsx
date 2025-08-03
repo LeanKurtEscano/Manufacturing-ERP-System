@@ -20,18 +20,18 @@ const Modal: React.FC<ModalProps> = ({ isOpen, title, message, onClose, onConfir
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.3 }}
-        className="bg-white rounded-lg shadow-lg w-full max-w-sm p-6"
+        className="bg-gray-900 rounded-lg shadow-lg w-full max-w-sm p-6"
       >
         
-        {title && <h2 className="text-lg font-semibold text-gray-800">{title}</h2>}
+        {title && <h2 className="text-lg font-semibold text-white">{title}</h2>}
 
        
-        {message && <p className="text-gray-600 mt-2">{message}</p>}
+        {message && <p className="text-gray-300 mt-2">{message}</p>}
 
        
         <div className="mt-4 flex justify-end space-x-3">
           <button 
-            className="px-4  py-2 cursor-pointer text-gray-600 border border-gray-300 rounded-md hover:bg-gray-100 transition"
+            className="px-4  py-2 cursor-pointer text-gray-300 hover:text-gray-50 transition"
             onClick={onClose}
           >
             Cancel

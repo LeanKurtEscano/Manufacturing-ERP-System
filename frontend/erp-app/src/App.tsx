@@ -7,6 +7,7 @@ import { Route,Routes } from 'react-router-dom'
 import Dashboard from './pages/Dashboard'
 import Login from './pages/auth/Login'
 import ManageUsers from './pages/super-admin/ManageUsers'
+import ManageProducts from './pages/inventory-manager/ManageProducts'
 function App() {
  
 
@@ -30,6 +31,7 @@ const Main:React.FC = () => {
           }
         >
         <Route path="manage-users" element={<ManageUsers />} />
+         <Route path="manage-products" element={<ManageProducts />} />
 
         </Route>
     </Routes>

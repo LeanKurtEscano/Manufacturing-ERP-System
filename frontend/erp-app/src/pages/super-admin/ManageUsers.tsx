@@ -322,19 +322,19 @@ const ManageUsers: React.FC = () => {
                           openEditModal(user);
                           setShowMobileMenu({});
                         }}
-                        className="flex items-center gap-2 w-full px-4 py-2 text-left text-white hover:bg-gray-600"
+                        className="flex items-center cursor-pointer gap-2 w-full px-4 py-2 text-left text-white hover:bg-gray-600"
                       >
-                        <Edit className="w-4 h-4" />
+                        <Edit className="w-4 h-4 cursor-pointer" />
                         Edit User
                       </button>
                       <button
                         onClick={() => {
-                          handleDeleteUser(user.id);
+                          setSelectedUserId(user.id);
                           setShowMobileMenu({});
                         }}
-                        className="flex items-center gap-2 w-full px-4 py-2 text-left text-red-400 hover:bg-gray-600"
+                        className="flex  items-center cursor-pointer gap-2 w-full px-4 py-2 text-left text-red-400 hover:bg-gray-600"
                       >
-                        <Trash2 className="w-4 h-4" />
+                        <Trash2 className="w-4  cursor-pointer h-4" />
                         Delete User
                       </button>
                     </div>
