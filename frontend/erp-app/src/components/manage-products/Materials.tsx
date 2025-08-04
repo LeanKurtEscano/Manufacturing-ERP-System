@@ -32,7 +32,7 @@ const MaterialModal = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50 backdrop-blur-sm">
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50 ">
       <div className="bg-slate-800 rounded-lg w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl">
         <div className="p-6">
           <div className="flex justify-between items-center mb-4">
