@@ -1,7 +1,8 @@
 
 import React, { createContext, useContext, useState } from 'react';
-import type { BOMItem } from '../constants/interfaces/manageProducts';
+import type { BOMItem, Category, Material } from '../constants/interfaces/manageProducts';
 import type{ Product } from '../constants/interfaces/manageProducts';
+import { mockCategories, mockMaterials } from '../constants/render';
 const ProductContext = createContext<any>(null);
 
 export const ProductProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -14,9 +15,23 @@ const [editingProduct, setEditingProduct] = useState<Product | null>(null);
        description: '',
        bom: [] as BOMItem[],
      });
-   
+
+     const [categories, setCategories] = useState<Category[]>();
+    const [materials, setMaterials] = useState<Material[]>(mockMaterials);
+
+      const resetProductForm = () => {
+    setProductForm({
+      name: '',
+      sku: '',
+      categoryId: '',
+      description: '',
+      bom: [],
+    });
+    setBomItems([]);
+    setEditingProduct(null);
+  };
   return (
-    <ProductContext.Provider value={{ bomItems, setBomItems, productForm, setProductForm, editingProduct, setEditingProduct }}>
+    <ProductContext.Provider value={{ bomItems, setBomItems, productForm, setProductForm, editingProduct, setEditingProduct, resetProductForm ,materials,setMaterials, categories, setCategories }}>
       {children}
     </ProductContext.Provider>
   );

@@ -32,13 +32,40 @@ export const mockCategories: Category[] = [
   { id: '3', name: 'Raw Materials', description: 'Base materials and supplies' },
 ];
 
-export const mockMaterials: Material[] = [
-  { id: '1', name: 'Steel Sheet', unit: 'kg', costPerUnit: 2.50 },
-  { id: '2', name: 'Aluminum Rod', unit: 'meter', costPerUnit: 5.75 },
-  { id: '3', name: 'Copper Wire', unit: 'meter', costPerUnit: 1.20 },
-  { id: '4', name: 'Plastic Resin', unit: 'kg', costPerUnit: 3.80 },
-  { id: '5', name: 'Screws M6', unit: 'piece', costPerUnit: 0.15 },
-  { id: '6', name: 'Circuit Board', unit: 'piece', costPerUnit: 12.00 },
+export const mockMaterials = [
+  {
+    id: '1',
+    name: 'Steel Rod',
+    sku: 'STL-001',
+    category: 'Raw Materials',
+  costPerUnit: 15.50,
+      unit: 'kg',
+    supplier: 'MetalCorp Inc.',
+    description: 'High-grade steel rod for structural components',
+    createdAt: '2024-01-10'
+  },
+  {
+    id: '2',
+    name: 'Copper Wire',
+    sku: 'COP-002',
+    category: 'Electronics',
+     costPerUnit: 8.75,
+    unit: 'meter',
+    supplier: 'ElectroSupply Co.',
+    description: '16 AWG copper wire for electrical connections',
+    createdAt: '2024-01-12'
+  },
+  {
+    id: '3',
+    name: 'Plastic Housing',
+    sku: 'PLS-003',
+    category: 'Components',
+    costPerUnit: 12.30,
+    unit: 'piece',
+    supplier: 'PlasticWorks Ltd.',
+    description: 'Injection molded ABS plastic housing',
+    createdAt: '2024-01-15'
+  }
 ];
 
 export const mockProducts: Product[] = [
@@ -51,7 +78,7 @@ export const mockProducts: Product[] = [
     bom: [
       { materialId: '2', quantity: 2 },
       { materialId: '3', quantity: 5 },
-      { materialId: '6', quantity: 1 },
+    
     ],
     totalCost: 35.50,
     createdAt: '2024-01-15',
@@ -64,9 +91,9 @@ export const mockProducts: Product[] = [
     description: 'Structural frame component',
     bom: [
       { materialId: '1', quantity: 10 },
-      { materialId: '5', quantity: 8 },
+     
     ],
     totalCost: 26.20,
     createdAt: '2024-01-20',
-  },
+  }
 ];

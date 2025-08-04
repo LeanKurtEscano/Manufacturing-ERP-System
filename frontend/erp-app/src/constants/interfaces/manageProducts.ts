@@ -1,9 +1,3 @@
-export interface Material {
-  id: string;
-  name: string;
-  unit: string;
-  costPerUnit: number;
-}
 
 export interface BOMItem {
   materialId: string;
@@ -25,4 +19,27 @@ export interface Category {
   id: string;
   name: string;
   description: string;
+}
+
+export type Material = {
+  id: string;
+  name: string;
+  sku: string;
+  category: string;
+  costPerUnit: number;
+  unit: string;
+  supplier: string;
+  description: string;
+  createdAt: string;
+};
+
+
+export interface MaterialModalProps {
+
+    isOpen: boolean;
+    onClose: () => void;
+    onSave: () => void;
+    editingMaterial: any;
+    materialForm: any;
+    setMaterialForm: React.Dispatch<React.SetStateAction<any>>;
 }
