@@ -3,6 +3,8 @@ package com.leankurt.erp.manufacturing_erp.dto.Product;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
+
 @Getter
 @Setter
 public class ProductDto {
@@ -10,5 +12,5 @@ public class ProductDto {
     private String sku;
     private Long category;
     private String description;
-    private BOMDto bom;
+    private List<BOMDto> bom;
 }
