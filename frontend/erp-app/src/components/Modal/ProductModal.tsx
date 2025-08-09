@@ -24,7 +24,7 @@ const ProductModal: React.FC<ProductModalProps> = ({ setShowProductModal, editin
    const handleSaveProduct = () => {
       const totalCost = bomItems.reduce((sum, item) => {
         const material = materials.find(m => m.id === item.materialId);
-        return sum + (material ? material.costPerUnit * item.quantity : 0);
+        return sum + ( material?.costPerUnit ?? 0 ) * item.quantity;
       }, 0);
   
       if (editingProduct) {

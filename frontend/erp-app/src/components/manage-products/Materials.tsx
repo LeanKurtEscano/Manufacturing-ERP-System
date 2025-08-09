@@ -1,6 +1,10 @@
 import React, { useState } from 'react';
 import { mockMaterials } from '../../constants/render';
 import type{ MaterialModalProps } from '../../constants/interfaces/manageProducts';
+import { productApi } from '../../config/apiConfig'; 
+import { useQueryClient } from '@tanstack/react-query';
+import type Categories from './Categories';
+
 
 const MaterialModal = ({ 
   isOpen, 
@@ -8,17 +12,32 @@ const MaterialModal = ({
   onSave, 
   editingMaterial, 
   materialForm, 
-  setMaterialForm 
+  setMaterialForm, 
+  category
 }: MaterialModalProps) => {
-  const materialCategories = ['Raw Materials', 'Electronics', 'Components', 'Packaging', 'Tools'];
+  
   const units = ['piece', 'kg', 'gram', 'meter', 'liter', 'box', 'roll'];
 
   const handleInputChange = (field, value) => {
     setMaterialForm(prev => ({ ...prev, [field]: value }));
   };
 
-  const handleSubmit = () => {
-    onSave();
+  const handleSubmit = async() => {
+    try {
+
+      const response = await productApi.post('/materials', materialForm);
+       
+
+      if (response.status === 201) {
+        onClose();
+      }
+
+    } catch (error) {
+      console.error("Error saving material:", error);
+    } finally {
+
+
+    }
   };
 
   const isFormValid = materialForm.name && 
@@ -82,8 +101,8 @@ const MaterialModal = ({
                   required
                 >
                   <option value="">Select category</option>
-                  {materialCategories.map(category => (
-                    <option key={category} value={category}>{category}</option>
+                  {category.map(category => (
+                    <option key={category.id} value={category.id}>{category.name}</option>
                   ))}
                 </select>
               </div>
@@ -148,7 +167,7 @@ const MaterialModal = ({
               </button>
               <button
                 type="button"
-                onClick={onSave}
+                onClick={handleSubmit}
                 className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                 disabled={!isFormValid}
               >
@@ -163,7 +182,7 @@ const MaterialModal = ({
 };
 
 
-const Materials = () => {
+const Materials: React.FC<CategoryProps> = ({ categories }) => {
   const [materials, setMaterials] = useState(mockMaterials);
   const [showMaterialModal, setShowMaterialModal] = useState(false);
   const [editingMaterial, setEditingMaterial] = useState(null);
@@ -177,7 +196,8 @@ const Materials = () => {
     description: ''
   });
 
-  
+  const queryClient = useQueryClient();
+
   const resetMaterialForm = () => {
     setMaterialForm({
       name: '',
@@ -220,32 +240,26 @@ const Materials = () => {
     resetMaterialForm();
   };
 
-  // CRUD operations
-  const handleSaveMaterial = () => {
-    const materialData = {
-      ...materialForm,
-      
-      costPerUnit: parseFloat(materialForm.costPerUnit) // Ensure both fields are updated
-    };
+  const handleSaveMaterial = async() => {
+     try {
 
-    if (editingMaterial) {
-      // Update existing material
-      setMaterials(materials.map(material => 
-        material.id === editingMaterial.id 
-          ? { ...material, ...materialData }
-          : material
-      ));
-    } else {
-      // Add new material
-      const newMaterial = {
-        id: Date.now().toString(),
-        ...materialData,
-        createdAt: new Date().toISOString().split('T')[0]
-      };
-      setMaterials([...materials, newMaterial]);
-    }
+      const response = await productApi.post('/materials', materialForm);
+       
+      if(response.status === 200) {
+       //queryClient.invalidateQueries({ queryKey: ['materials'] })
+
+      }
+
+
+     } catch (error) {
+      
+     } finally {
+
+       closeModal();
+
+     }
     
-    closeModal();
+   
   };
 
   const handleDeleteMaterial = (materialId) => {
@@ -253,6 +267,66 @@ const Materials = () => {
       setMaterials(materials.filter(material => material.id !== materialId));
     }
   };
+
+  // No Data Component
+  const NoDataState = () => (
+    <div className="bg-slate-800 rounded-lg shadow-lg">
+      <div className="flex flex-col items-center justify-center py-16 px-6 text-center">
+        {/* Icon */}
+        <div className="w-24 h-24 bg-slate-700 rounded-full flex items-center justify-center mb-6">
+          <svg 
+            className="w-12 h-12 text-slate-400" 
+            fill="none" 
+            stroke="currentColor" 
+            viewBox="0 0 24 24"
+          >
+            <path 
+              strokeLinecap="round" 
+              strokeLinejoin="round" 
+              strokeWidth={1.5} 
+              d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M9 1v6m6-6v6" 
+            />
+          </svg>
+        </div>
+        
+        {/* Title */}
+        <h3 className="text-xl font-semibold text-white mb-2">
+          No Materials Found
+        </h3>
+        
+        {/* Description */}
+        <p className="text-slate-400 mb-6 max-w-md">
+          You haven't added any materials yet. Create your first material to start managing your inventory.
+        </p>
+        
+        {/* Action Button */}
+        <button
+          onClick={openAddModal}
+          className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg flex items-center gap-2 transition-colors duration-200 font-medium"
+        >
+          <svg 
+            className="w-5 h-5" 
+            fill="none" 
+            stroke="currentColor" 
+            viewBox="0 0 24 24"
+          >
+            <path 
+              strokeLinecap="round" 
+              strokeLinejoin="round" 
+              strokeWidth={2} 
+              d="M12 4v16m8-8H4" 
+            />
+          </svg>
+          Add Your First Material
+        </button>
+        
+        {/* Optional: Additional helpful text */}
+        <div className="mt-8 text-sm text-slate-500">
+          <p>Materials help you track inventory costs and suppliers</p>
+        </div>
+      </div>
+    </div>
+  );
 
   return (
     <div className="min-h-screen bg-slate-900 text-white">
@@ -269,63 +343,68 @@ const Materials = () => {
           </button>
         </div>
 
-        {/* Materials Table */}
-        <div className="bg-slate-800 rounded-lg overflow-hidden shadow-lg">
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead className="bg-slate-700">
-                <tr>
-                  <th className="text-left p-4 font-medium">Material</th>
-                  <th className="text-left p-4 font-medium">SKU</th>
-                  <th className="text-left p-4 font-medium">Category</th>
-                  <th className="text-left p-4 font-medium">Unit Cost</th>
-                  <th className="text-left p-4 font-medium">Unit</th>
-                  <th className="text-left p-4 font-medium">Supplier</th>
-                  <th className="text-left p-4 font-medium">Created</th>
-                  <th className="text-left p-4 font-medium">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {materials.map((material, index) => (
-                  <tr key={material.id} className={index % 2 === 0 ? 'bg-slate-800' : 'bg-slate-750'}>
-                    <td className="p-4">
-                      <div>
-                        <div className="font-medium text-white">{material.name}</div>
-                        <div className="text-sm text-slate-400">{material.description}</div>
-                      </div>
-                    </td>
-                    <td className="p-4 text-slate-300">{material.sku}</td>
-                    <td className="p-4">
-                      <span className="bg-slate-600 text-slate-200 whitespace-nowrap px-2 py-1 rounded text-sm">
-                        {material.category}
-                      </span>
-                    </td>
-                    <td className="p-4 text-green-400 font-medium">${material.costPerUnit.toFixed(2)}</td>
-                    <td className="p-4 text-slate-300">{material.unit}</td>
-                    <td className="p-4 text-slate-300">{material.supplier}</td>
-                    <td className="p-4 text-slate-400">{material.createdAt}</td>
-                    <td className="p-4">
-                      <div className="flex gap-2">
-                        <button
-                          onClick={() => openEditModal(material)}
-                          className="text-blue-400 hover:text-blue-300 text-sm transition-colors duration-200 px-2 py-1 rounded hover:bg-slate-700"
-                        >
-                          Edit
-                        </button>
-                        <button
-                          onClick={() => handleDeleteMaterial(material.id)}
-                          className="text-red-400 hover:text-red-300 text-sm transition-colors duration-200 px-2 py-1 rounded hover:bg-slate-700"
-                        >
-                          Delete
-                        </button>
-                      </div>
-                    </td>
+        {/* Conditional Rendering: Table or No Data State */}
+        {materials.length === 0 ? (
+          <NoDataState />
+        ) : (
+          /* Materials Table */
+          <div className="bg-slate-800 rounded-lg overflow-hidden shadow-lg">
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead className="bg-slate-700">
+                  <tr>
+                    <th className="text-left p-4 font-medium">Material</th>
+                    <th className="text-left p-4 font-medium">SKU</th>
+                    <th className="text-left p-4 font-medium">Category</th>
+                    <th className="text-left p-4 font-medium">Unit Cost</th>
+                    <th className="text-left p-4 font-medium">Unit</th>
+                    <th className="text-left p-4 font-medium">Supplier</th>
+                    <th className="text-left p-4 font-medium">Created</th>
+                    <th className="text-left p-4 font-medium">Actions</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {materials.map((material, index) => (
+                    <tr key={material.id} className={index % 2 === 0 ? 'bg-slate-800' : 'bg-slate-750'}>
+                      <td className="p-4">
+                        <div>
+                          <div className="font-medium text-white">{material.name}</div>
+                          <div className="text-sm text-slate-400">{material.description}</div>
+                        </div>
+                      </td>
+                      <td className="p-4 text-slate-300">{material.sku}</td>
+                      <td className="p-4">
+                        <span className="bg-slate-600 text-slate-200 whitespace-nowrap px-2 py-1 rounded text-sm">
+                          {material.category}
+                        </span>
+                      </td>
+                      <td className="p-4 text-green-400 font-medium">${material.costPerUnit.toFixed(2)}</td>
+                      <td className="p-4 text-slate-300">{material.unit}</td>
+                      <td className="p-4 text-slate-300">{material.supplier}</td>
+                      <td className="p-4 text-slate-400">{material.createdAt}</td>
+                      <td className="p-4">
+                        <div className="flex gap-2">
+                          <button
+                            onClick={() => openEditModal(material)}
+                            className="text-blue-400 hover:text-blue-300 text-sm transition-colors duration-200 px-2 py-1 rounded hover:bg-slate-700"
+                          >
+                            Edit
+                          </button>
+                          <button
+                            onClick={() => handleDeleteMaterial(material.id)}
+                            className="text-red-400 hover:text-red-300 text-sm transition-colors duration-200 px-2 py-1 rounded hover:bg-slate-700"
+                          >
+                            Delete
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
-        </div>
+        )}
 
         {/* Material Modal */}
         <MaterialModal
@@ -335,6 +414,7 @@ const Materials = () => {
           editingMaterial={editingMaterial}
           materialForm={materialForm}
           setMaterialForm={setMaterialForm}
+          category={categories}
         />
       </div>
     </div>

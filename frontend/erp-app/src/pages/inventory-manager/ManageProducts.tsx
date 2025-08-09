@@ -1,22 +1,22 @@
 import React, { useState } from 'react';
-import type { Material,BOMItem,Product,Category } from '../../constants/interfaces/manageProducts';
+import type { Material, BOMItem, Product, Category } from '../../constants/interfaces/manageProducts';
 // Types
 import { useProductContext } from '../../contexts/ProductContext';
-import { mockProducts,mockCategories,mockMaterials } from '../../constants/render';
+import { mockProducts, mockCategories, mockMaterials } from '../../constants/render';
 import Products from '../../components/manage-products/Products';
 // Mock data
 import Categories from '../../components/manage-products/Categories';
 import ProductModal from '../../components/Modal/ProductModal';
 import Materials from '../../components/manage-products/Materials';
-
-
+import { productApi } from '../../config/apiConfig';
+import { useQuery } from '@tanstack/react-query';
 const ManageProducts: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'products' | 'categories' | 'materials'>('products');
   const [products, setProducts] = useState<Product[]>(mockProducts);
   const [categories, setCategories] = useState<Category[]>(mockCategories);
   const [materials] = useState<Material[]>(mockMaterials);
   const [showMaterialModal, setShowMaterialModal] = useState(false);
-const [editingMaterial, setEditingMaterial] = useState(null);
+  const [editingMaterial, setEditingMaterial] = useState(null);
   // Product form state
   const [showProductModal, setShowProductModal] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
@@ -27,6 +27,15 @@ const [editingMaterial, setEditingMaterial] = useState(null);
     description: '',
     bom: [] as BOMItem[],
   });
+
+
+const { data: categoriesData, isError, isLoading } = useQuery({
+  queryKey: ['categories'],
+  queryFn: () => productApi.get('/categories'),
+});
+
+console.log('Categories Data:', categoriesData?.data);
+
 
   // Category form state
   const [showCategoryModal, setShowCategoryModal] = useState(false);
@@ -45,26 +54,32 @@ const [editingMaterial, setEditingMaterial] = useState(null);
     });
   };
 
- 
+
   const handleAddCategory = () => {
     setShowCategoryModal(true);
     resetCategoryForm();
   };
 
-  const handleSaveCategory = () => {
-    const newCategory: Category = {
-      id: Date.now().toString(),
-      ...categoryForm,
-    };
-    setCategories([...categories, newCategory]);
-    setShowCategoryModal(false);
-    resetCategoryForm();
+  const handleSaveCategory = async () => {
+    try {
+      const response = await productApi.post('/categories', categoryForm);
+      if (response.status === 200) {
+       
+      }
+    } catch (error) {
+      console.error('Error saving category:', error);
+    } finally {
+      setShowCategoryModal(false);
+      resetCategoryForm();
+
+    }
+
   };
 
-  
- 
 
- 
+
+
+
 
   return (
     <div className="min-h-screen bg-slate-900 text-white">
@@ -79,57 +94,54 @@ const [editingMaterial, setEditingMaterial] = useState(null);
         <div className="flex space-x-1 mb-6">
           <button
             onClick={() => setActiveTab('products')}
-            className={`px-4 py-2 rounded-lg transition-colors ${
-              activeTab === 'products'
+            className={`px-4 py-2 rounded-lg transition-colors ${activeTab === 'products'
                 ? 'bg-blue-600 text-white'
                 : 'text-slate-400 hover:text-white hover:bg-slate-700'
-            }`}
+              }`}
           >
             Products
           </button>
           <button
             onClick={() => setActiveTab('categories')}
-            className={`px-4 py-2 rounded-lg transition-colors ${
-              activeTab === 'categories'
+            className={`px-4 py-2 rounded-lg transition-colors ${activeTab === 'categories'
                 ? 'bg-blue-600 text-white'
                 : 'text-slate-400 hover:text-white hover:bg-slate-700'
-            }`}
+              }`}
           >
             Categories
           </button>
-           <button
+          <button
             onClick={() => setActiveTab('materials')}
-            className={`px-4 py-2 rounded-lg transition-colors ${
-              activeTab === 'materials'
+            className={`px-4 py-2 rounded-lg transition-colors ${activeTab === 'materials'
                 ? 'bg-blue-600 text-white'
                 : 'text-slate-400 hover:text-white hover:bg-slate-700'
-            }`}
+              }`}
           >
             Materials
           </button>
-        
+
         </div>
 
-        
+
 
         {/* Products Tab */}
         {activeTab === 'products' && (
-          
-                <>
-                <Products setShowProductModal={setShowProductModal}  products={products} />
-                </>
+
+          <>
+            <Products setShowProductModal={setShowProductModal} products={products} />
+          </>
         )}
 
         {/* Categories Tab */}
         {activeTab === 'categories' && (
           <Categories
             handleAddCategory={handleAddCategory}
-            categories={categories}
+            categories={categoriesData?.data || []}
           />
         )}
 
-         {activeTab === 'materials' && (
-           <Materials />
+        {activeTab === 'materials' && (
+          <Materials categories={categoriesData?.data || []} />
         )}
 
         {/* Product Modal */}
@@ -137,7 +149,7 @@ const [editingMaterial, setEditingMaterial] = useState(null);
           <ProductModal
             setShowProductModal={setShowProductModal}
             editingProduct={editingProduct}
-            categories={categories}
+            categories={categoriesData?.data || []}
           />
         )}
 
@@ -162,7 +174,7 @@ const [editingMaterial, setEditingMaterial] = useState(null);
                     <input
                       type="text"
                       value={categoryForm.name}
-                      onChange={(e) => setCategoryForm({...categoryForm, name: e.target.value})}
+                      onChange={(e) => setCategoryForm({ ...categoryForm, name: e.target.value })}
                       className="w-full p-2 bg-slate-700 border border-slate-600 rounded-lg text-white"
                       placeholder="Enter category name"
                     />
@@ -171,7 +183,7 @@ const [editingMaterial, setEditingMaterial] = useState(null);
                     <label className="block text-sm font-medium mb-1">Description</label>
                     <textarea
                       value={categoryForm.description}
-                      onChange={(e) => setCategoryForm({...categoryForm, description: e.target.value})}
+                      onChange={(e) => setCategoryForm({ ...categoryForm, description: e.target.value })}
                       className="w-full p-2 bg-slate-700 border border-slate-600 rounded-lg text-white h-20"
                       placeholder="Enter category description"
                     />

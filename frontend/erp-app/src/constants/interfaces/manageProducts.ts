@@ -42,4 +42,11 @@ export interface MaterialModalProps {
     editingMaterial: any;
     materialForm: any;
     setMaterialForm: React.Dispatch<React.SetStateAction<any>>;
+    category: Category[];
+}
+
+
+export interface CategoryProps {
+
+  categories: Category[];
 }
