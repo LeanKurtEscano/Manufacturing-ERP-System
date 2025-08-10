@@ -1,6 +1,7 @@
 package com.leankurt.erp.manufacturing_erp.model;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -19,6 +20,7 @@ public class Category {
 
 
      @OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
+     @JsonIgnore
      private List<Material> materials;
 
 }

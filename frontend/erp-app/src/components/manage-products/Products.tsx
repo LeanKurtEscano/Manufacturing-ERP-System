@@ -10,7 +10,7 @@ import { mockCategories } from '../../constants/render';
 
 const Products: React.FC<ProductsProps> = ({ setShowProductModal, products }) => {
 
-  const { setEditingProduct, setProductForm,setBomItems } = useProductContext();
+  const { setEditingProduct, setProductForm,setBomItems,  } = useProductContext();
    const getCategoryName = (categoryId: string) => {
     return mockCategories.find(c => c.id === categoryId)?.name || 'Unknown';
   };

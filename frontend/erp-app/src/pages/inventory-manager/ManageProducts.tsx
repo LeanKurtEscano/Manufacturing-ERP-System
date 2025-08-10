@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import type { Material, BOMItem, Product, Category } from '../../constants/interfaces/manageProducts';
 // Types
 import { useProductContext } from '../../contexts/ProductContext';
@@ -13,10 +13,7 @@ import { useQuery } from '@tanstack/react-query';
 const ManageProducts: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'products' | 'categories' | 'materials'>('products');
   const [products, setProducts] = useState<Product[]>(mockProducts);
-  const [categories, setCategories] = useState<Category[]>(mockCategories);
-  const [materials] = useState<Material[]>(mockMaterials);
-  const [showMaterialModal, setShowMaterialModal] = useState(false);
-  const [editingMaterial, setEditingMaterial] = useState(null);
+  const { materials, setMaterials } = useProductContext();
   // Product form state
   const [showProductModal, setShowProductModal] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
@@ -27,6 +24,22 @@ const ManageProducts: React.FC = () => {
     description: '',
     bom: [] as BOMItem[],
   });
+
+  const { data, isLoading:materialsLoading, isError:materialsError } = useQuery({
+    queryKey: ['materials'],
+    queryFn: async () => {
+      const res = await productApi.get('/materials');
+      return res.data;
+    }
+  });
+  
+  useEffect(() => {
+    if (data) {
+      setMaterials(data);
+    }
+  }, [data]);
+  
+  
 
 
 const { data: categoriesData, isError, isLoading } = useQuery({
@@ -62,7 +75,7 @@ console.log('Categories Data:', categoriesData?.data);
 
   const handleSaveCategory = async () => {
     try {
-      const response = await productApi.post('/categories', categoryForm);
+      const response = await productApi.post('/category', categoryForm);
       if (response.status === 200) {
        
       }

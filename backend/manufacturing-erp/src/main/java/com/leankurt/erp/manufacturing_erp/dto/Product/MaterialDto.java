@@ -10,7 +10,7 @@ public class MaterialDto {
     private String name;
     private String sku;
     private Long category;
-    private  float unitCost;
+    private  float costPerUnit;
     private String unit;
     private String supplier;
     private String description;

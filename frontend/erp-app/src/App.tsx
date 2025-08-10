@@ -25,6 +25,8 @@ function App() {
 
 const Main:React.FC = () => {
   useTokenHandler();
+
+  console.log("access_token", localStorage.getItem('access_token'));
   return (
     <>
     <Routes>

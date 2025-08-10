@@ -16,6 +16,8 @@ import com.leankurt.erp.manufacturing_erp.repo.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class ProductService {
 
@@ -49,7 +51,7 @@ public class ProductService {
         material.setSku(dto.getSku());
         material.setCategory(category);
         material.setDescription(dto.getDescription());
-        material.setUnitCost(dto.getUnitCost());
+        material.setCostPerUnit(dto.getCostPerUnit());
         material.setSupplier(dto.getSupplier());
         material.setUnit(dto.getUnit());
 
@@ -82,11 +84,21 @@ public class ProductService {
             bomRepository.save(bom);
 
             // Update cost if quantity is included
-            totalCost += material.getUnitCost() * bomDto.getQuantity();
+            totalCost += material.getCostPerUnit() * bomDto.getQuantity();
         }
 
         savedProduct.setTotalCost(totalCost);
         productRepository.save(savedProduct); // update with total cost
+    }
+
+
+    public List<Category> getAllCategory() {
+        return  categoryRepository.findAll();
+    }
+
+
+    public List<Material> getAllMaterials() {
+        return materialRepository.findAll();
     }
 
 }

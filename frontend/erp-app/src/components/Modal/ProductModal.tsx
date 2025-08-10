@@ -158,7 +158,7 @@ const ProductModal: React.FC<ProductModalProps> = ({ setShowProductModal, editin
                           className="w-full p-2 bg-slate-600 border border-slate-500 rounded text-white"
                         >
                           <option value="">Select Material</option>
-                          {mockMaterials.map((material) => (
+                          {materials?.map((material) => (
                             <option key={material.id} value={material.id}>
                               {material.name} (${material.costPerUnit}/{material.unit})
                             </option>

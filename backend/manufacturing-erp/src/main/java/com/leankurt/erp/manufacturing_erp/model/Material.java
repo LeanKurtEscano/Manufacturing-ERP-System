@@ -19,7 +19,7 @@ public class Material {
     private String sku;
     private String description;
     private String supplier;
-    private float unitCost;
+    private float costPerUnit;
     private String unit;
 
 

@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { mockMaterials } from '../../constants/render';
-import type{ MaterialModalProps } from '../../constants/interfaces/manageProducts';
+import type{ Material, MaterialModalProps } from '../../constants/interfaces/manageProducts';
 import { productApi } from '../../config/apiConfig'; 
 import { useQueryClient } from '@tanstack/react-query';
-import type Categories from './Categories';
-
-
+import { useQuery } from '@tanstack/react-query';
+import { useProductContext } from '../../contexts/ProductContext';
+import type { CategoryProps } from '../../constants/interfaces/manageProducts';
 const MaterialModal = ({ 
   isOpen, 
   onClose, 
@@ -101,7 +101,7 @@ const MaterialModal = ({
                   required
                 >
                   <option value="">Select category</option>
-                  {category.map(category => (
+                  {category?.map(category => (
                     <option key={category.id} value={category.id}>{category.name}</option>
                   ))}
                 </select>
@@ -183,9 +183,9 @@ const MaterialModal = ({
 
 
 const Materials: React.FC<CategoryProps> = ({ categories }) => {
-  const [materials, setMaterials] = useState(mockMaterials);
+
   const [showMaterialModal, setShowMaterialModal] = useState(false);
-  const [editingMaterial, setEditingMaterial] = useState(null);
+  const [editingMaterial, setEditingMaterial] = useState<Material | null>(null);
   const [materialForm, setMaterialForm] = useState({
     name: '',
     sku: '',
@@ -196,7 +196,12 @@ const Materials: React.FC<CategoryProps> = ({ categories }) => {
     description: ''
   });
 
+  const {materials,setMaterials} = useProductContext();
+
   const queryClient = useQueryClient();
+
+  
+
 
   const resetMaterialForm = () => {
     setMaterialForm({
@@ -211,7 +216,7 @@ const Materials: React.FC<CategoryProps> = ({ categories }) => {
     setEditingMaterial(null);
   };
 
-  const populateFormForEdit = (material) => {
+  const populateFormForEdit = (material: Material) => {
     setMaterialForm({
       name: material.name,
       sku: material.sku,
@@ -246,7 +251,7 @@ const Materials: React.FC<CategoryProps> = ({ categories }) => {
       const response = await productApi.post('/materials', materialForm);
        
       if(response.status === 200) {
-       //queryClient.invalidateQueries({ queryKey: ['materials'] })
+       queryClient.invalidateQueries({ queryKey: ['materials'] })
 
       }
 
@@ -344,7 +349,7 @@ const Materials: React.FC<CategoryProps> = ({ categories }) => {
         </div>
 
         {/* Conditional Rendering: Table or No Data State */}
-        {materials.length === 0 ? (
+        {materials?.length === 0 ? (
           <NoDataState />
         ) : (
           /* Materials Table */
@@ -364,7 +369,7 @@ const Materials: React.FC<CategoryProps> = ({ categories }) => {
                   </tr>
                 </thead>
                 <tbody>
-                  {materials.map((material, index) => (
+                  {materials?.map((material, index) => (
                     <tr key={material.id} className={index % 2 === 0 ? 'bg-slate-800' : 'bg-slate-750'}>
                       <td className="p-4">
                         <div>
@@ -375,7 +380,7 @@ const Materials: React.FC<CategoryProps> = ({ categories }) => {
                       <td className="p-4 text-slate-300">{material.sku}</td>
                       <td className="p-4">
                         <span className="bg-slate-600 text-slate-200 whitespace-nowrap px-2 py-1 rounded text-sm">
-                          {material.category}
+                          {material.category.name}
                         </span>
                       </td>
                       <td className="p-4 text-green-400 font-medium">${material.costPerUnit.toFixed(2)}</td>

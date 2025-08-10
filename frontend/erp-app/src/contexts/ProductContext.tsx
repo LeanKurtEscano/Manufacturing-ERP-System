@@ -17,7 +17,7 @@ const [editingProduct, setEditingProduct] = useState<Product | null>(null);
      });
 
      const [categories, setCategories] = useState<Category[]>();
-    const [materials, setMaterials] = useState<Material[]>(mockMaterials);
+    const [materials, setMaterials] = useState<Material[]>();
 
       const resetProductForm = () => {
     setProductForm({
