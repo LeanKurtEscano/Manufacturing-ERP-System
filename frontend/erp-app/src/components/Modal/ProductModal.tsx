@@ -4,6 +4,7 @@ import { useProductContext } from '../../contexts/ProductContext';
 import type { Category } from '../../constants/interfaces/manageProducts';
 import type{ Product } from '../../constants/interfaces/manageProducts';
 import { mockMaterials } from '../../constants/render';
+import { productApi } from '../../config/apiConfig';
 interface ProductModalProps {
   setShowProductModal: React.Dispatch<React.SetStateAction<boolean>>;
   editingProduct: boolean | null; 
@@ -11,7 +12,8 @@ interface ProductModalProps {
 }
 
 const ProductModal: React.FC<ProductModalProps> = ({ setShowProductModal, editingProduct, categories }) => {
-     const [selectedMaterial, setSelectedMaterial] = useState('');
+    const [selectedMaterial, setSelectedMaterial] = useState<number | ''>('');
+
      const [materialQuantity, setMaterialQuantity] = useState('');
     const{setProductForm, productForm, setBomItems,setProducts,products, resetProductForm,bomItems, materials} = useProductContext();
     
@@ -21,11 +23,31 @@ const ProductModal: React.FC<ProductModalProps> = ({ setShowProductModal, editin
   };
 
 
-   const handleSaveProduct = () => {
-      const totalCost = bomItems.reduce((sum, item) => {
+   const handleSaveProduct = async() => {
+      const totalCost = productForm.bom.reduce((sum, item) => {
         const material = materials.find(m => m.id === item.materialId);
         return sum + ( material?.costPerUnit ?? 0 ) * item.quantity;
       }, 0);
+      productForm.totalCost = totalCost;
+
+      try {
+
+        const response = await productApi.post('/products', productForm)
+
+        if(response.status === 201) {
+           setShowProductModal(false);
+           resetProductForm();
+         
+        }
+
+
+      } catch (error) {
+
+      }finally {
+
+     
+
+      }
   
       if (editingProduct) {
         setProducts(products.map(p => 
@@ -33,6 +55,7 @@ const ProductModal: React.FC<ProductModalProps> = ({ setShowProductModal, editin
             ? { ...p, ...productForm, bom: bomItems, totalCost }
             : p
         ));
+
       } else {
         const newProduct: Product = {
           id: Date.now().toString(),
@@ -44,8 +67,7 @@ const ProductModal: React.FC<ProductModalProps> = ({ setShowProductModal, editin
         setProducts([...products, newProduct]);
       }
       
-      setShowProductModal(false);
-      resetProductForm();
+    
     };
 
       const getMaterialName = (materialId: string) => {
@@ -56,25 +78,34 @@ const ProductModal: React.FC<ProductModalProps> = ({ setShowProductModal, editin
     return materials.find(m => m.id === materialId)?.unit || '';
   };
 
-     const addBOMItem = () => {
-    if (selectedMaterial && materialQuantity) {
-      const existingItemIndex = bomItems.findIndex(item => item.materialId === selectedMaterial);
-      
+   const addBOMItem = () => {
+  if (selectedMaterial && materialQuantity) {
+    setProductForm(prev => {
+      const existingItemIndex = prev.bom.findIndex(
+        item => item.materialId === Number(selectedMaterial)
+      );
+
+      let updatedBOM = [...prev.bom];
       if (existingItemIndex >= 0) {
-        const updatedItems = [...bomItems];
-        updatedItems[existingItemIndex].quantity = parseFloat(materialQuantity);
-        setBomItems(updatedItems);
+        updatedBOM[existingItemIndex].quantity = parseFloat(materialQuantity);
       } else {
-        setBomItems([...bomItems, {
-          materialId: selectedMaterial,
+        updatedBOM.push({
+          materialId: Number(selectedMaterial),
           quantity: parseFloat(materialQuantity),
-        }]);
+        });
       }
-      
-      setSelectedMaterial('');
-      setMaterialQuantity('');
-    }
-  };
+
+      return {
+        ...prev,
+        bom: updatedBOM,
+      };
+    });
+
+    setSelectedMaterial('');
+    setMaterialQuantity('');
+  }
+};
+
 
   return (
    <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
@@ -154,7 +185,7 @@ const ProductModal: React.FC<ProductModalProps> = ({ setShowProductModal, editin
                       <div className="space-y-3">
                         <select
                           value={selectedMaterial}
-                          onChange={(e) => setSelectedMaterial(e.target.value)}
+                          onChange={(e) => setSelectedMaterial(Number(e.target.value))}
                           className="w-full p-2 bg-slate-600 border border-slate-500 rounded text-white"
                         >
                           <option value="">Select Material</option>
