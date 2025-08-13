@@ -7,11 +7,11 @@ import { mockMaterials } from '../../constants/render';
 import { productApi } from '../../config/apiConfig';
 interface ProductModalProps {
   setShowProductModal: React.Dispatch<React.SetStateAction<boolean>>;
-  editingProduct: boolean | null; 
+  
   categories: Category[];
 }
 
-const ProductModal: React.FC<ProductModalProps> = ({ setShowProductModal, editingProduct, categories }) => {
+const ProductModal: React.FC<ProductModalProps> = ({ setShowProductModal,  categories }) => {
     const [selectedMaterial, setSelectedMaterial] = useState<number | ''>('');
 
      const [materialQuantity, setMaterialQuantity] = useState('');
@@ -47,28 +47,9 @@ const ProductModal: React.FC<ProductModalProps> = ({ setShowProductModal, editin
 
      
 
-      }
-  
-      if (editingProduct) {
-        setProducts(products.map(p => 
-          p.id === editingProduct.id 
-            ? { ...p, ...productForm, bom: bomItems, totalCost }
-            : p
-        ));
+    }
 
-      } else {
-        const newProduct: Product = {
-          id: Date.now().toString(),
-          ...productForm,
-          bom: bomItems,
-          totalCost,
-          createdAt: new Date().toISOString().split('T')[0],
-        };
-        setProducts([...products, newProduct]);
-      }
-      
-    
-    };
+  };
 
       const getMaterialName = (materialId: string) => {
     return materials.find(m => m.id === materialId)?.name || 'Unknown';
@@ -113,7 +94,7 @@ const ProductModal: React.FC<ProductModalProps> = ({ setShowProductModal, editin
               <div className="p-6">
                 <div className="flex justify-between items-center mb-6">
                   <h2 className="text-xl font-bold">
-                    {editingProduct ? 'Edit Product' : 'Add New Product'}
+                    Add New Product
                   </h2>
                   <button
                     onClick={() => setShowProductModal(false)}
@@ -261,7 +242,7 @@ const ProductModal: React.FC<ProductModalProps> = ({ setShowProductModal, editin
                     onClick={handleSaveProduct}
                     className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
                   >
-                    {editingProduct ? 'Update' : 'Add'} Product
+                    Add Product
                   </button>
                 </div>
               </div>
