@@ -49,9 +49,9 @@ public class ProductController {
     }
 
     @PostMapping("/products")
-    public ResponseEntity<String> createProduct(@RequestBody ProductDto dto) {
+    public ResponseEntity<?> createProduct(@RequestBody ProductDto dto) {
         productService.addProduct(dto);
-        return ResponseEntity.ok("Product added with BOM");
+        return (ResponseEntity<?>) ResponseEntity.status(HttpStatus.CREATED);
     }
 
 }

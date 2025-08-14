@@ -17,10 +17,15 @@ const ProductModal: React.FC<ProductModalProps> = ({ setShowProductModal,  categ
      const [materialQuantity, setMaterialQuantity] = useState('');
     const{setProductForm, productForm, setBomItems,setProducts,products, resetProductForm,bomItems, materials} = useProductContext();
     
-    
-     const removeBOMItem = (materialId: string) => {
-    setBomItems(bomItems.filter(item => item.materialId !== materialId));
+    const removeBOMItem = (Id: string) => {
+    setProductForm(prevForm => ({
+    ...prevForm,
+    bom: prevForm.bom.filter(item => item.materialId !== Id)
+  }));
+
   };
+
+  console.log(productForm)
 
 
    const handleSaveProduct = async() => {
@@ -28,7 +33,12 @@ const ProductModal: React.FC<ProductModalProps> = ({ setShowProductModal,  categ
         const material = materials.find(m => m.id === item.materialId);
         return sum + ( material?.costPerUnit ?? 0 ) * item.quantity;
       }, 0);
-      productForm.totalCost = totalCost;
+      
+      
+      setProductForm(prev => ({ 
+        ...prev,
+        totalCost
+      }));
 
       try {
 
@@ -42,6 +52,8 @@ const ProductModal: React.FC<ProductModalProps> = ({ setShowProductModal,  categ
 
 
       } catch (error) {
+
+        console.log(error)
 
       }finally {
 
@@ -196,7 +208,7 @@ const ProductModal: React.FC<ProductModalProps> = ({ setShowProductModal,  categ
 
                     {/* BOM Items List */}
                     <div className="space-y-2">
-                      {bomItems.map((item) => {
+                      {productForm.bom.map((item) => {
                         const material = materials.find(m => m.id === item.materialId);
                         const cost = material ? material.costPerUnit * item.quantity : 0;
                         return (
@@ -209,7 +221,7 @@ const ProductModal: React.FC<ProductModalProps> = ({ setShowProductModal,  categ
                             </div>
                             <button
                               onClick={() => removeBOMItem(item.materialId)}
-                              className="text-red-400 hover:text-red-300"
+                              className="text-red-400 cursor-pointer hover:text-red-300"
                             >
                               Remove
                             </button>
@@ -221,7 +233,7 @@ const ProductModal: React.FC<ProductModalProps> = ({ setShowProductModal,  categ
                     {/* Total Cost */}
                     <div className="mt-4 p-3 bg-slate-700 rounded">
                       <div className="font-semibold text-green-400">
-                        Total Cost: ${bomItems.reduce((sum, item) => {
+                        Total Cost: ${productForm.bom.reduce((sum, item) => {
                           const material = materials.find(m => m.id === item.materialId);
                           return sum + (material ? material.costPerUnit * item.quantity : 0);
                         }, 0).toFixed(2)}

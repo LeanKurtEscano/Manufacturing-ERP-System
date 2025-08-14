@@ -59,8 +59,8 @@ public class ProductService {
     }
 
     public void addProduct(ProductDto dto) {
-        Category category = categoryRepository.findById(dto.getCategory())
-                .orElseThrow(() -> new RuntimeException("Category not found with ID: " + dto.getCategory()));
+        Category category = categoryRepository.findById(Long.parseLong(dto.getCategoryId()))
+                .orElseThrow(() -> new RuntimeException("Category not found with ID: " + dto.getCategoryId()));
 
         Product product = new Product();
         product.setName(dto.getName());

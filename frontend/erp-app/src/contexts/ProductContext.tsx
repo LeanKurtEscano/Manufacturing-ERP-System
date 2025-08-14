@@ -27,6 +27,7 @@ const [editingProduct, setEditingProduct] = useState<Product | null>(null);
       categoryId: '',
       description: '',
       bom: [],
+      totalCost:0
     });
     setBomItems([]);
     setEditingProduct(null);

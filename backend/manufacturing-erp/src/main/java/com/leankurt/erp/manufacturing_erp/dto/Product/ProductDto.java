@@ -10,7 +10,8 @@ import java.util.List;
 public class ProductDto {
     private String name;
     private String sku;
-    private Long category;
+    private String categoryId;
     private String description;
     private List<BOMDto> bom;
+    float totalCost;
 }
