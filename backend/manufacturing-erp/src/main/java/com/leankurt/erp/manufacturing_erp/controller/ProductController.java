@@ -5,6 +5,7 @@ import com.leankurt.erp.manufacturing_erp.dto.Product.CategoryDto;
 import com.leankurt.erp.manufacturing_erp.dto.Product.MaterialDto;
 import com.leankurt.erp.manufacturing_erp.dto.Product.ProductDto;
 import com.leankurt.erp.manufacturing_erp.model.Category;
+import com.leankurt.erp.manufacturing_erp.model.Product;
 import com.leankurt.erp.manufacturing_erp.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -12,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/product")
@@ -52,6 +54,20 @@ public class ProductController {
     public ResponseEntity<?> createProduct(@RequestBody ProductDto dto) {
         productService.addProduct(dto);
         return (ResponseEntity<?>) ResponseEntity.status(HttpStatus.CREATED);
+    }
+
+    @GetMapping("/products/{id}")
+    public ResponseEntity<?> getProduct(@PathVariable String id) {
+        Optional<Product> product =  productService.getProduct(id);
+        return (ResponseEntity<?>) ResponseEntity.ok(product);
+    }
+
+
+
+    @GetMapping("/all-products")
+    public ResponseEntity<?> getAllProducts() {
+        List<Product> product =  productService.getAllProducts();
+        return (ResponseEntity<?>) ResponseEntity.ok(product);
     }
 
 }

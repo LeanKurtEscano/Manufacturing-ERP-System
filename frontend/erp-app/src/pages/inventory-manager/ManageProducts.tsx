@@ -17,13 +17,6 @@ const ManageProducts: React.FC = () => {
   // Product form state
   const [showProductModal, setShowProductModal] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
-  const [productForm, setProductForm] = useState({
-    name: '',
-    sku: '',
-    categoryId: '',
-    description: '',
-    bom: [] as BOMItem[],
-  });
 
   const { data, isLoading:materialsLoading, isError:materialsError } = useQuery({
     queryKey: ['materials'],
@@ -47,7 +40,7 @@ const { data: categoriesData, isError, isLoading } = useQuery({
   queryFn: () => productApi.get('/categories'),
 });
 
-console.log('Categories Data:', categoriesData?.data);
+
 
 
   // Category form state

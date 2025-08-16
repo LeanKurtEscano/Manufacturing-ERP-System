@@ -1,14 +1,23 @@
 import React from 'react'
 import { useProductContext } from '../../contexts/ProductContext';
 import type { Product } from '../../constants/interfaces/manageProducts';
+import { useQuery } from '@tanstack/react-query';
 interface ProductsProps {
   setShowProductModal: React.Dispatch<React.SetStateAction<boolean>>;
 
   products: Product[];
 }
 import { mockCategories } from '../../constants/render';
+import { productApi } from '../../config/apiConfig';
 
 const Products: React.FC<ProductsProps> = ({ setShowProductModal, products }) => {
+
+  const {data, isLoading, error } = useQuery({
+    queryKey: ['products'],
+    queryFn: () => productApi.get('/all-products')
+  });
+
+  console.log(data?.data);
 
   const { setEditingProduct, setProductForm, setBomItems, } = useProductContext();
   const getCategoryName = (categoryId: string) => {

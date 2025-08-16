@@ -5,6 +5,7 @@ import type { Category } from '../../constants/interfaces/manageProducts';
 import type{ Product } from '../../constants/interfaces/manageProducts';
 import { mockMaterials } from '../../constants/render';
 import { productApi } from '../../config/apiConfig';
+import { useQueryClient } from '@tanstack/react-query';
 interface ProductModalProps {
   setShowProductModal: React.Dispatch<React.SetStateAction<boolean>>;
   
@@ -13,7 +14,8 @@ interface ProductModalProps {
 
 const ProductModal: React.FC<ProductModalProps> = ({ setShowProductModal,  categories }) => {
     const [selectedMaterial, setSelectedMaterial] = useState<number | ''>('');
-
+     
+    const queryClient = useQueryClient();
      const [materialQuantity, setMaterialQuantity] = useState('');
     const{setProductForm, productForm, setBomItems,setProducts,products, resetProductForm,bomItems, materials} = useProductContext();
     
