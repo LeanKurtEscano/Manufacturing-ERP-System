@@ -9,28 +9,21 @@ import Categories from '../../components/manage-products/Categories';
 import ProductModal from '../../components/Modal/ProductModal';
 import Materials from '../../components/manage-products/Materials';
 import { productApi } from '../../config/apiConfig';
-import { useQuery } from '@tanstack/react-query';
+import { matchMutation, useQuery } from '@tanstack/react-query';
 const ManageProducts: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'products' | 'categories' | 'materials'>('products');
   const [products, setProducts] = useState<Product[]>(mockProducts);
-  const { materials, setMaterials } = useProductContext();
+ 
   // Product form state
   const [showProductModal, setShowProductModal] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
 
-  const { data, isLoading:materialsLoading, isError:materialsError } = useQuery({
-    queryKey: ['materials'],
-    queryFn: async () => {
-      const res = await productApi.get('/materials');
-      return res.data;
-    }
-  });
-  
-  useEffect(() => {
+{/*   useEffect(() => {
     if (data) {
       setMaterials(data);
     }
-  }, [data]);
+  }, [data]); */}
+ 
   
   
 
@@ -39,6 +32,19 @@ const { data: categoriesData, isError, isLoading } = useQuery({
   queryKey: ['categories'],
   queryFn: () => productApi.get('/categories'),
 });
+
+const { data: materialsData, isError: materialsError, isLoading: materialsLoading } = useQuery({
+  queryKey: ['materials'],
+  queryFn: () => productApi.get('/materials'),
+});
+
+
+console.log(materialsData?.data.data)
+
+
+
+
+
 
 
 

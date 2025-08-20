@@ -7,6 +7,9 @@ import lombok.Setter;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+
 @Entity
 @Getter
 @Setter
@@ -22,13 +25,18 @@ public class Material {
     private float costPerUnit;
     private String unit;
 
-
     @ManyToOne
     @JoinColumn(name="category_id", nullable = false)
+    @JsonIgnore   // 🚀 hides category in JSON
     private Category category;
 
     @OneToMany(mappedBy = "material", cascade = CascadeType.ALL)
+    @JsonIgnore   // 🚀 hides bom in JSON
     private List<Bom> bom;
 
+
+    public String getCategoryName() {
+        return category != null ? category.getName() : null;
+    }
 
 }

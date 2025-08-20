@@ -79,7 +79,7 @@ const Products: React.FC<ProductsProps> = ({ setShowProductModal, products }) =>
             </tr>
           </thead>
           <tbody>
-            {products.map((product) => (
+            {data?.data.map((product) => (
               <tr key={product.id} className="border-t border-slate-700">
                 <td className="p-4">
                   <div>

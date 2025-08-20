@@ -7,7 +7,7 @@ export const ProfileProvider = ({ children }: { children: React.ReactNode }) => 
   const [userRole, setUserRole] = useState<string | null>(localStorage.getItem("userRole"));
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false); 
   const [toggle, setToggle] = useState<boolean>(true);
-  const [toggleLog, setToggleLog] = useState<boolean>(true); // Assuming toggle is used for sidebar visibility
+  const [toggleLog, setToggleLog] = useState<boolean>(false); // Assuming toggle is used for sidebar visibility
   return (
     <ProfileContext.Provider value={{ userRole, setUserRole, isAuthenticated, setIsAuthenticated, toggle, setToggle,toggleLog,setToggleLog }}>
       {children}

@@ -196,11 +196,18 @@ const Materials: React.FC<CategoryProps> = ({ categories }) => {
     description: ''
   });
 
-  const {materials,setMaterials} = useProductContext();
+
 
   const queryClient = useQueryClient();
+  
 
   
+  const { data: materialsData, isError: materialsError, isLoading: materialsLoading } = useQuery({
+    queryKey: ['materials'],
+    queryFn: () => productApi.get('/materials'),
+  });
+  
+
 
 
   const resetMaterialForm = () => {
@@ -267,10 +274,8 @@ const Materials: React.FC<CategoryProps> = ({ categories }) => {
    
   };
 
-  const handleDeleteMaterial = (materialId) => {
-    if (window.confirm('Are you sure you want to delete this material?')) {
-      setMaterials(materials.filter(material => material.id !== materialId));
-    }
+  const handleDeleteMaterial = (materialId:string) => {
+   
   };
 
   // No Data Component
@@ -349,7 +354,7 @@ const Materials: React.FC<CategoryProps> = ({ categories }) => {
         </div>
 
         {/* Conditional Rendering: Table or No Data State */}
-        {materials?.length === 0 ? (
+        {materialsData?.data?.data.length === 0 ? (
           <NoDataState />
         ) : (
           /* Materials Table */
@@ -369,7 +374,16 @@ const Materials: React.FC<CategoryProps> = ({ categories }) => {
                   </tr>
                 </thead>
                 <tbody>
-                  {materials?.map((material, index) => (
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+
+                  {materialsData?.data?.data.map((material, index) => (
                     <tr key={material.id} className={index % 2 === 0 ? 'bg-slate-800' : 'bg-slate-750'}>
                       <td className="p-4">
                         <div>
@@ -380,7 +394,7 @@ const Materials: React.FC<CategoryProps> = ({ categories }) => {
                       <td className="p-4 text-slate-300">{material.sku}</td>
                       <td className="p-4">
                         <span className="bg-slate-600 text-slate-200 whitespace-nowrap px-2 py-1 rounded text-sm">
-                          {material.category.name}
+                          {material.categoryName}
                         </span>
                       </td>
                       <td className="p-4 text-green-400 font-medium">${material.costPerUnit.toFixed(2)}</td>

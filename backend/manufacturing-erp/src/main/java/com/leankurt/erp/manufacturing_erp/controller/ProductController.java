@@ -5,6 +5,7 @@ import com.leankurt.erp.manufacturing_erp.dto.Product.CategoryDto;
 import com.leankurt.erp.manufacturing_erp.dto.Product.MaterialDto;
 import com.leankurt.erp.manufacturing_erp.dto.Product.ProductDto;
 import com.leankurt.erp.manufacturing_erp.model.Category;
+import com.leankurt.erp.manufacturing_erp.model.Material;
 import com.leankurt.erp.manufacturing_erp.model.Product;
 import com.leankurt.erp.manufacturing_erp.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +13,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -41,14 +44,25 @@ public class ProductController {
     @PostMapping("/material")
     public ResponseEntity<?> createMaterial(@RequestBody MaterialDto dto) {
         productService.addMaterial(dto);
+
+        Object result = productService.getAllMaterials();
+        System.out.println("DEBUG >>> " + result.getClass());
+
         return (ResponseEntity<?>) ResponseEntity.status(HttpStatus.CREATED);
     }
 
 
     @GetMapping("/materials")
-    public ResponseEntity<?> getMaterials() {
-        return  ResponseEntity.ok(productService.getAllMaterials());
+    public ResponseEntity<Map<String, Object>> getMaterials() {
+        List<MaterialDto> materials = productService.getAllMaterials();
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("status", "success");
+        response.put("data", materials); // ✅ let Jackson handle serialization
+
+        return ResponseEntity.ok(response);
     }
+
 
     @PostMapping("/products")
     public ResponseEntity<?> createProduct(@RequestBody ProductDto dto) {
@@ -66,7 +80,7 @@ public class ProductController {
 
     @GetMapping("/all-products")
     public ResponseEntity<?> getAllProducts() {
-        List<Product> product =  productService.getAllProducts();
+        List<ProductDto> product =  productService.getAllProducts();
         return (ResponseEntity<?>) ResponseEntity.ok(product);
     }
 

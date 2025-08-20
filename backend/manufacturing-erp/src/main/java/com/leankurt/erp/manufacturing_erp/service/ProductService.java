@@ -98,8 +98,8 @@ public class ProductService {
     }
 
 
-    public List<Material> getAllMaterials() {
-        return materialRepository.findAll();
+    public List<MaterialDto> getAllMaterials() {
+        return materialRepository.findAll().stream().map(MaterialDto:: fromEntity).toList();
     }
 
     public Optional<Product> getProduct(String Id) {
@@ -107,8 +107,11 @@ public class ProductService {
     }
 
 
-    public List<Product> getAllProducts() {
-        return  productRepository.findAll();
+    public List<ProductDto> getAllProducts() {
+        return productRepository.findAll().stream()
+                .map(ProductDto::fromEntity) // map each entity → DTO
+                .toList();
     }
+
 
 }

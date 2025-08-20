@@ -4,6 +4,7 @@ import { useProductContext } from '../../contexts/ProductContext';
 import type { Category } from '../../constants/interfaces/manageProducts';
 import type{ Product } from '../../constants/interfaces/manageProducts';
 import { mockMaterials } from '../../constants/render';
+import { useQuery } from '@tanstack/react-query';
 import { productApi } from '../../config/apiConfig';
 import { useQueryClient } from '@tanstack/react-query';
 interface ProductModalProps {
@@ -26,6 +27,14 @@ const ProductModal: React.FC<ProductModalProps> = ({ setShowProductModal,  categ
   }));
 
   };
+
+  
+
+  
+const { data: materialsData, isError: materialsError, isLoading: materialsLoading } = useQuery({
+  queryKey: ['materials'],
+  queryFn: () => productApi.get('/materials'),
+});
 
   console.log(productForm)
 
@@ -184,7 +193,7 @@ const ProductModal: React.FC<ProductModalProps> = ({ setShowProductModal,  categ
                           className="w-full p-2 bg-slate-600 border border-slate-500 rounded text-white"
                         >
                           <option value="">Select Material</option>
-                          {materials?.map((material) => (
+                          {materialsData?.data?.data.map((material) => (
                             <option key={material.id} value={material.id}>
                               {material.name} (${material.costPerUnit}/{material.unit})
                             </option>
